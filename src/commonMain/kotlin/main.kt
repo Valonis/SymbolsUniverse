@@ -24,9 +24,11 @@ suspend fun main() = Korge(width = 1500, height = 900, bgcolor = Colors["#555555
     uiFont = resourcesVfs["fonts/uifont.fnt"].readBitmapFont()
     val listOfSVG = mutableListOf<String>()
 
+    // read directory od svg files and load them into list
     val filesDir = resourcesVfs["bliss_svg"].listSimple()
     val accept = resourcesVfs["accept.png"].readBitmap()
 
+    // create list of SVG files as list of Strings
     filesDir.forEach {
         val s = it.readString()
         listOfSVG.add(s)
@@ -34,15 +36,24 @@ suspend fun main() = Korge(width = 1500, height = 900, bgcolor = Colors["#555555
             println("$name")
     }
 
+    // pick up random SVG String
     var selected = listOfSVG.shuffled().first()
+
+    // ==== NOW MAGIC !!! renderSymbol function takes as a parameter SVG String and converts it to list of Bitmaps containing the symbol ======
     val symbol = renderSymbol(selected)
+
+    // ==== placing symbol on Stage as Image ======
     symbol.forEach {
                 symbolImage.add(image(it).centerOnStage())
     }
+
+    // ===== printing symbol name from SVG data =======
     val name =  Xml(selected).text.split('.')[1].split('\n')[0]
     sText = text(name, textSize = 22.0, color = Colors.WHITE, font = uiFont).alignBottomToTopOf(symbolImage.last())
         .alignRightToRightOf(symbolImage.last())
 
+
+    // ======  picking randomly next symbol on button click =======
     val button = container {
         image(accept).scale(0.5, 0.5).xy(600, 750).centerXOnStage()
     }
